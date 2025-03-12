@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using RepositoryLayer;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,10 @@ builder.Services.AddScoped<IUserRL, UserRL>();
 //JWT Generator and Email Service
 builder.Services.AddSingleton<JwtTokenGenerator>();
 builder.Services.AddSingleton<EmailService>();
+
+// Add Redis configuration
+var redisConnectionString = builder.Configuration["Redis:ConnectionString"];
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 
 var app = builder.Build();
 

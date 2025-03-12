@@ -12,7 +12,7 @@ namespace BusinessLayer.Interface
     {
         Task<UserEntity> Register(UserDTO userDTO);
         Task<string> Login(UserDTO userDTO);
-        Task<bool> ForgotPassword(ForgotPasswordDTO forgotPasswordDTO);
-        Task<bool> ResetPassword(ResetPasswordDTO resetPasswordDTO);
+        public Task<string> GenerateResetTokenAsync(string email);
+        public Task<bool> VerifyResetTokenAsync(string email, string token);
     }
 }

@@ -53,8 +53,8 @@ namespace AddressBookApplication.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDTO)
         {
-            var result = await _userService.ForgotPassword(forgotPasswordDTO);
-            if (!result) return NotFound("User not found.");
+            var result = await _userService.GenerateResetTokenAsync(forgotPasswordDTO.Email);
+            if (result == null) return NotFound("User not found.");
 
             return Ok("Password reset link has been sent to your email.");
         }
@@ -67,7 +67,7 @@ namespace AddressBookApplication.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO)
         {
-            var result = await _userService.ResetPassword(resetPasswordDTO);
+            var result = await _userService.VerifyResetTokenAsync(resetPasswordDTO.Token, resetPasswordDTO.NewPassword);
             if (!result) return BadRequest("Invalid or expired reset token.");
 
             return Ok("Password has been reset successfully.");
