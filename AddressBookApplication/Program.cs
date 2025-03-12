@@ -37,7 +37,9 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Conn
 // Add RabbitMQ
 builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]));
 builder.Services.AddSingleton<IRabbitMQPublisher, RabbitMQPublisher>();
-builder.Services.AddHostedService<RabbitMQConsumer>();
+// Existing code...
+
+builder.Services.AddHostedService<RabbitMQConsumer>(); // Ensure RabbitMQConsumer implements IHostedService
 
 var app = builder.Build();
 
