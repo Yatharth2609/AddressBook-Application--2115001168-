@@ -39,8 +39,6 @@ bower_components/
 
 # Environment variables and credentials
 .env
-appsettings.json
-appsettings.Development.json
 
 # Rider / JetBrains files
 .idea/
