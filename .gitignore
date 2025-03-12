@@ -1,0 +1,52 @@
+# Visual Studio specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build artifacts
+bin/
+obj/
+out/
+debug/
+release/
+
+# Entity Framework migrations
+Migrations/
+AppDbContextModelSnapshot.cs
+
+# User secrets
+secrets.json
+
+# Logs and generated files
+*.log
+logs/
+*.cache
+*.config
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# ASP.NET files
+wwwroot/
+node_modules/
+dist/
+bower_components/
+
+# Environment variables and credentials
+.env
+appsettings.json
+appsettings.Development.json
+
+# Rider / JetBrains files
+.idea/
+*.sln.iml
+*.Rider/
+
+# macOS / Linux files
+.DS_Store
+*.swp
