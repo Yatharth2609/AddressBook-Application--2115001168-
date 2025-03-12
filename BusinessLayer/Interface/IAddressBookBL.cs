@@ -13,7 +13,7 @@ namespace BusinessLayer.Interface
     {
         Task<IEnumerable<AddressBookEntryEntity>> GetAllContacts();
         Task<AddressBookEntryEntity?> GetContactById(int id);
-        Task<AddressBookEntryEntity> AddContact(AddressBookEntryEntity contact);
+        Task AddContact(AddressBookEntryEntity contact);
         Task<AddressBookEntryEntity?> UpdateContact(int id, AddressBookEntryEntity contact);
         Task<bool> DeleteContact(int id);
     }

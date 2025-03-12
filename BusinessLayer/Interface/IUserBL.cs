@@ -10,8 +10,8 @@ namespace BusinessLayer.Interface
 {
     public interface IUserBL
     {
-        Task<UserEntity> Register(UserDTO userDTO);
-        Task<string> Login(UserDTO userDTO);
+        Task Register(UserEntity user);
+        Task<UserEntity> Login(UserDTO userDTO);
         public Task<string> GenerateResetTokenAsync(string email);
         public Task<bool> VerifyResetTokenAsync(string email, string token);
     }

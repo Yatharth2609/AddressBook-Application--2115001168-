@@ -52,14 +52,14 @@ namespace AddressBookApplication.Controllers
         [HttpPost]
         public async Task<ActionResult<AddressBookEntryEntity>> AddContact([FromBody] AddressBookEntryEntity contact)
         {
-            if(contact == null)
+            if (contact == null)
             {
                 return BadRequest("Invalid contact data.");
             }
 
-            var addedContact = await _service.AddContact(contact);
+            await _service.AddContact(contact);
 
-            return CreatedAtAction(nameof(GetContactById), new { id = addedContact.Id }, addedContact);
+            return CreatedAtAction(nameof(GetContactById), new { id = contact.Id }, contact);
         }
 
         /// <summary>

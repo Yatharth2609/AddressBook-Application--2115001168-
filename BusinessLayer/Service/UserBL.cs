@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BusinessLayer.Helper;
 using BusinessLayer.Helpers;
 using BusinessLayer.Interface;
+using BusinessLayer.Messaging;
 using Microsoft.Extensions.Configuration;
 using ModelLayer.DTO;
 using ModelLayer.Model;
@@ -22,13 +23,15 @@ namespace BusinessLayer.Service
         private readonly EmailService _emailService;
         private readonly IDatabase _cache;
         private readonly TimeSpan _cacheExpiration;
-        public UserBL(IUserRL userRepository, JwtTokenGenerator jwtTokenGenerator, EmailService emailService, IConnectionMultiplexer redis, IConfiguration config)
+        private readonly IRabbitMQPublisher _publisher;
+        public UserBL(IUserRL userRepository, JwtTokenGenerator jwtTokenGenerator, EmailService emailService, IConnectionMultiplexer redis, IConfiguration config, IRabbitMQPublisher publisher)
         {
             _userRepository = userRepository;
             _jwtTokenGenerator = jwtTokenGenerator;
             _emailService = emailService;
             _cache = redis.GetDatabase();
             _cacheExpiration = TimeSpan.FromMinutes(int.Parse(config["Redis:CacheExpirationMinutes"] ?? "10"));
+            _publisher = publisher;
         }
 
         public async Task Register(UserEntity user)
@@ -36,6 +39,9 @@ namespace BusinessLayer.Service
             await _userRepository.RegisterUser(user);
             string cacheKey = $"User:{user.Email}";
             await _cache.KeyDeleteAsync(cacheKey);
+
+            var eventMessage = new { Email = user.Email, Name = user.Name, Event = "UserRegistered" };
+            _publisher.PublishMessage(eventMessage, "User.Registered");
         }
 
         public async Task<UserEntity> Login(UserDTO userDTO)
@@ -92,3 +98,4 @@ namespace BusinessLayer.Service
             return true;
         }
     }
+}

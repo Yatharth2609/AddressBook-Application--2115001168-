@@ -22,10 +22,10 @@ namespace AddressBookApplication.Controllers
         /// <param name="userDTO"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        public async Task<ActionResult<UserEntity>> Register([FromBody] UserDTO userDTO)
+        public async Task<ActionResult<UserEntity>> Register([FromBody] UserEntity user)
         {
-            var registeredUser = await _userService.Register(userDTO);
-            return CreatedAtAction(nameof(Register), new { id = registeredUser.Id }, registeredUser);
+            await _userService.Register(user);
+            return CreatedAtAction(nameof(Register), new { id = user.Id }, user);
         }
 
         /// <summary>

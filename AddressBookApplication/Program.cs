@@ -1,6 +1,7 @@
 using System;
 using BusinessLayer.Helper;
 using BusinessLayer.Interface;
+using BusinessLayer.Messaging;
 using BusinessLayer.Service;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer;
@@ -32,6 +33,11 @@ builder.Services.AddSingleton<EmailService>();
 // Add Redis configuration
 var redisConnectionString = builder.Configuration["Redis:ConnectionString"];
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
+
+// Add RabbitMQ
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]));
+builder.Services.AddSingleton<IRabbitMQPublisher, RabbitMQPublisher>();
+builder.Services.AddHostedService<RabbitMQConsumer>();
 
 var app = builder.Build();
 
