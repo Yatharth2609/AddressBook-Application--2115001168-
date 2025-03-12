@@ -10,6 +10,7 @@ using RepositoryLayer.Service;
 
 namespace BusinessLayer.Service
 {
+    //These are all the methods for CRUD operation.
     public class AddressBookBL : IAddressBookBL
     {
         IAddressBookRL _repository;

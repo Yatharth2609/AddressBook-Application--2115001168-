@@ -8,6 +8,7 @@ using RepositoryLayer.Service;
 
 namespace BusinessLayer.Interface
 {
+    //This is the interface for AddressBook BL.
     public interface IAddressBookBL
     {
         Task<IEnumerable<AddressBookEntryEntity>> GetAllContacts();
