@@ -29,5 +29,11 @@ namespace RepositoryLayer.Service
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task UpdateUser(UserEntity user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

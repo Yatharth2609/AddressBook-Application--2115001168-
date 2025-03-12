@@ -24,8 +24,9 @@ builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();
 builder.Services.AddScoped<IUserBL, UserBL>();
 builder.Services.AddScoped<IUserRL, UserRL>();
 
-//JWT Generator
+//JWT Generator and Email Service
 builder.Services.AddSingleton<JwtTokenGenerator>();
+builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
 
