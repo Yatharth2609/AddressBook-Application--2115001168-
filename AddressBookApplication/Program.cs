@@ -1,4 +1,5 @@
 using System;
+using BusinessLayer.Helper;
 using BusinessLayer.Interface;
 using BusinessLayer.Service;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,13 @@ builder.Services.AddDbContext<AdressBookDBContext>(options =>
 // Register Repository and Service in Dependency Injection
 builder.Services.AddScoped<IAddressBookRL, AddressBookRL>();
 builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();
+builder.Services.AddScoped<IUserBL, UserBL>();
+builder.Services.AddScoped<IUserRL, UserRL>();
+
+//JWT Generator
+builder.Services.AddSingleton<JwtTokenGenerator>();
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
