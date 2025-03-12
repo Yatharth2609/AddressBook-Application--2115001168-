@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ModelLayer.Model
 {
+    //This is the User Entity Model
     public class UserEntity
     {
         [Key]

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ModelLayer.Model
 {
+    //This is the Address Book Entity Model
     public class AddressBookEntryEntity
     {
         [Key]
