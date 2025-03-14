@@ -23,8 +23,13 @@ namespace AddressBookApplication.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AddressBookEntryEntity>>> GetAllContacts()
         {
+            ResponseModel<IEnumerable<AddressBookEntryEntity>> response = new ResponseModel<IEnumerable<AddressBookEntryEntity>>();
             var contacts = await _service.GetAllContacts();
-            return Ok(contacts);
+            response.Success = true;
+            response.Message = "All Entries fetched successfully";
+            response.Data = contacts;
+            
+            return Ok(response);
         }
 
         /// <summary>
@@ -35,12 +40,19 @@ namespace AddressBookApplication.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AddressBookEntryEntity>> GetContactById(int id)
         {
+            ResponseModel<AddressBookEntryEntity> response = new ResponseModel<AddressBookEntryEntity>();
             var contact = await _service.GetContactById(id);
             if (contact == null)
             {
-                return NotFound();
+                response.Success = false;
+                response.Message = $"No contact with {id} is found!";
+                response.Data = null;
+                return NotFound(response);
             }
 
+            response.Success = true;
+            response.Message = $"Here are the contact details of ID {id}";
+            response.Data = contact;
             return Ok(contact);
         }
 
@@ -52,14 +64,21 @@ namespace AddressBookApplication.Controllers
         [HttpPost]
         public async Task<ActionResult<AddressBookEntryEntity>> AddContact([FromBody] AddressBookEntryEntity contact)
         {
+            ResponseModel<AddressBookEntryEntity> response = new ResponseModel<AddressBookEntryEntity>();
             if (contact == null)
             {
-                return BadRequest("Invalid contact data.");
+                response.Success = false;
+                response.Message = "Invalid contact data.";
+                response.Data = null;
+                return BadRequest(response);
             }
 
             await _service.AddContact(contact);
 
-            return CreatedAtAction(nameof(GetContactById), new { id = contact.Id }, contact);
+            response.Success = true;
+            response.Message = "Contact Added Succedssfully.";
+            response.Data = contact;
+            return Ok(response);
         }
 
         /// <summary>
@@ -71,9 +90,20 @@ namespace AddressBookApplication.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateContact(int id, [FromBody] AddressBookEntryEntity contact)
         {
+            ResponseModel<AddressBookEntryEntity> response = new ResponseModel<AddressBookEntryEntity>();
             var updatedContact = await _service.UpdateContact(id, contact);
-            if (updatedContact == null) return NotFound("Contact not found.");
-            return Ok(updatedContact);
+            if (updatedContact == null)
+            {
+                response.Success = false;
+                response.Message = "Contact Not Found.";
+                response.Data = null;
+                return NotFound(response);
+            }
+
+            response.Success = true;
+            response.Message = "Contact Updated Succedssfully.";
+            response.Data = updatedContact;
+            return Ok(response);
         }
 
         /// <summary>
@@ -84,9 +114,19 @@ namespace AddressBookApplication.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContact(int id)
         {
+            ResponseModel<bool> response = new ResponseModel<bool>();
             var deleted = await _service.DeleteContact(id);
-            if (!deleted) return NotFound("Contact not found.");
-            return NoContent();
+            if (!deleted)
+            {
+                response.Success = false;
+                response.Message = "Contact Not Found.";
+                response.Data = false;
+                return NotFound(response);
+            }
+            response.Success = true;
+            response.Message = "Contact Deleted Successfully.";
+            response.Data = true;
+            return Ok(response);
         }
     }
 }

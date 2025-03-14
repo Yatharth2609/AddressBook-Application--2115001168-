@@ -24,8 +24,13 @@ namespace AddressBookApplication.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserEntity>> Register([FromBody] UserEntity user)
         {
+            ResponseModel<UserEntity> response = new ResponseModel<UserEntity>();
+
             await _userService.Register(user);
-            return CreatedAtAction(nameof(Register), new { id = user.Id }, user);
+            response.Success = true;
+            response.Message = "User Registered Successfully";
+            response.Data = user;
+            return Ok(response);
         }
 
         /// <summary>
@@ -36,12 +41,19 @@ namespace AddressBookApplication.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] UserDTO userDTO)
         {
+            ResponseModel<UserEntity> response = new ResponseModel<UserEntity>();
             var token = await _userService.Login(userDTO);
             if (token == null)
             {
-                return Unauthorized("Invalid credentials");
+                response.Success = false;
+                response.Message = "Invalid credentials";
+                response.Data = null;
+                return Unauthorized(response);
             }
 
+            response.Success = true;
+            response.Message = "User Logged In Successfully";
+            response.Data = token;
             return Ok(new { Token = token });
         }
 
@@ -53,10 +65,22 @@ namespace AddressBookApplication.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDTO)
         {
+            ResponseModel<string> response = new ResponseModel<string>();
             var result = await _userService.GenerateResetTokenAsync(forgotPasswordDTO.Email);
-            if (result == null) return NotFound("User not found.");
+            if (result == null)
+            {
+                response.Success = false;
+                response.Message = "User Not Found!";
+                response.Data = null;
 
-            return Ok("Password reset link has been sent to your email.");
+                return NotFound(response);
+            }
+
+            response.Success = true;
+            response.Message = "Password reset link has been sent to your email.";
+            response.Data = result;
+
+            return Ok(response);
         }
 
         /// <summary>
@@ -67,10 +91,20 @@ namespace AddressBookApplication.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO)
         {
+            ResponseModel<bool> response = new ResponseModel<bool>();
             var result = await _userService.VerifyResetTokenAsync(resetPasswordDTO.Token, resetPasswordDTO.NewPassword);
-            if (!result) return BadRequest("Invalid or expired reset token.");
+            if (!result)
+            {
+                response.Success = false;
+                response.Message = "Invalid or Expired Token.";
+                response.Data = result;
+            }
 
-            return Ok("Password has been reset successfully.");
+            response.Success = true;
+            response.Message = "Password has been reset successfully.";
+            response.Data = result;
+
+            return Ok(response);
         }
     }
 }
