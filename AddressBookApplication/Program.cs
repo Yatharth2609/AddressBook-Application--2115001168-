@@ -8,8 +8,12 @@ using RepositoryLayer;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
 using StackExchange.Redis;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders(); // Removes default logging providers
+builder.Logging.AddConsole();
 
 // Add services to the container
 builder.Services.AddControllers();

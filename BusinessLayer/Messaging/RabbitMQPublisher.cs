@@ -24,7 +24,8 @@ public class RabbitMQPublisher : IRabbitMQPublisher
 
         _exchange = config["RabbitMQ:Exchange"];
 
-        _channel.ExchangeDeclare(exchange: _exchange, type: ExchangeType.Direct, durable: true);
+        // Ensure durability is set properly
+        _channel.ExchangeDeclare(exchange: _exchange, type: ExchangeType.Direct, durable: true, autoDelete: false);
     }
 
     public void PublishMessage<T>(T message, string routingKey)

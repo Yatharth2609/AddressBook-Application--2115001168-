@@ -1,14 +1,15 @@
-﻿using RabbitMQ.Client;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 
 public class RabbitMQConsumer : BackgroundService
 {
     private readonly IModel _channel;
     private readonly string _queueName;
+    private readonly string _exchange;
 
     public RabbitMQConsumer(IConfiguration config)
     {
@@ -22,9 +23,17 @@ public class RabbitMQConsumer : BackgroundService
         var connection = factory.CreateConnection();
         _channel = connection.CreateModel();
 
+        _exchange = config["RabbitMQ:Exchange"];
         _queueName = config["RabbitMQ:Queue"];
+
+        // Declare the exchange first to make sure it exists
+        _channel.ExchangeDeclare(_exchange, ExchangeType.Direct, durable: true, autoDelete: false);
+
+        // Now declare the queue
         _channel.QueueDeclare(_queueName, durable: true, exclusive: false, autoDelete: false);
-        _channel.QueueBind(_queueName, config["RabbitMQ:Exchange"], config["RabbitMQ:RoutingKey"]);
+
+        // Bind the queue to the exchange
+        _channel.QueueBind(_queueName, _exchange, config["RabbitMQ:RoutingKey"]);
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
